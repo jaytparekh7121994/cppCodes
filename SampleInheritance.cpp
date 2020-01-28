@@ -1,6 +1,7 @@
 # include <iostream>
-# include <cstdio>
 # include <string>
+
+using namespace std;
 
 class Student 
 {
@@ -11,7 +12,7 @@ class Student
     string Name;
     
     protected:
-        char SubjectChoosen[10];
+        string SubjectChoosen[10];
     
     public:
         
@@ -40,7 +41,7 @@ void Student :: setRollNo(int roll)
 {
     if (roll < 0)
     {
-        perror("%d is a negative number",roll);    
+        perror("The No.is a negative number");    
     }
     else
     {
@@ -65,20 +66,18 @@ class Subject : public Student
     public:
         int sel_row[10];
         int sel_col;
-        char Subject_sel[10][10]= { "Maths", "Physics", "Chemistry", "Hindi", "Gujarati", "Marathi", "English"};
+        char Subject_sel[10][10]= { "Physics", "Chemistry", "Maths", "Hindi", "Gujarati", "Marathi", "English"};
         
         // Set Methods
-        void setSubject(int subjcode[ ]);
+        void setSubject(size_t ,int subjcode[ ]);
         
         // Get Methods 
         string* getSubject();
 };
 
-void Subject :: setSubject(int subjcode[ ])
+void Subject :: setSubject(size_t subjtot,int subjcode[ ])
 {
-    int n = sizeof(subjcode)/sizeof(subjcode[0]);
-    
-    for (int i=0; i<=n ;i++)
+    for (int i=0; i< subjtot ;i++)
     {
         int num = subjcode[i];
         SubjectChoosen[i] = Subject_sel[num];
@@ -88,7 +87,7 @@ void Subject :: setSubject(int subjcode[ ])
 string* Subject :: getSubject()
 {
     string *sptr;
-    sptr = Subject_choosen;
+    sptr = SubjectChoosen;
     return sptr;
 }
 
@@ -96,18 +95,17 @@ class Result: public Subject
 {
 	int Marks[10];
 	public:
-		int getMarks();
-		void setMarks(int [] );
+		int* getMarks();
+		void setMarks(size_t ,int [] );
 		Result()
 		{
 			Marks[10]={0};
 		}
 };
 
-void Result :: setMarks(int marks_data[])
+void Result :: setMarks(size_t subjtot, int marks_data[ ])
 {
-    int siz = sizeof(marks_data)/sizeof(marks_data[0]);
-    for(int i=0 ; i<siz ; i++)
+    for(int i=0 ; i< subjtot ; i++)
     {
         Marks[i] = marks_data[i];
     }
@@ -118,69 +116,77 @@ int* Result::getMarks()
 	return Marks; 
 }
 
+
+
 int main()
 {
-    int subjcode[10]={3,5,1};
-    int subjmarks[10]={40,80,90};
+    int subjcode[10]={};
+    int subjmarks[10]={};
     
     string InpName;
+    string remarks;
+    int scode[10]={};
+    int mcode[10]={};
     int RollNo;
-    int NoOfSubj;
-    string Subject[10];
-    
+    size_t NoOfSubj;
     
     Result stud1;
     
     cout << "Enter the Name: ";
-    cin >> InpName ;
-    cout << endl;
+    getline(cin,InpName);  // To use Strings with spaces we need to use getline
+    
+    // Syntax getline(istream& is, string& str, char delim)
+    
     
     cout << "Enter the Roll Number: ";
     cin >> RollNo;
-    cout << endl;
     
     cout << "Enter Number of Subjects: ";
     cin >> NoOfSubj;
-    cout << endl;
     
-    cout << "Enter the Subjects: ";
-    for (int i = 0 ; i<= NoOfSubj ; i++)
+    
+    cout << "Enter the Subject ID: "<<endl;
+    cout << " 0. Physics \n 1. Chemistry \n 2. Maths \n 3. Hindi \n 4. Gujarati \n 5. Marathi \n 6. English"<<endl;
+    
+    for (int i = 0 ; i< NoOfSubj ; i++)
     {
-        cin >> Subject[i];
-        cout << endl;
+        cout << "Subject No."<< i <<":";
+        cin >> scode[i];
+        subjcode[i] = scode[i];
+        
+        cout << " Marks : ";
+        cin >> mcode[i];
+        subjmarks[i] = mcode[i];
     }
     
+    stud1.setSubject(NoOfSubj,subjcode);
     stud1.setName(InpName);
     stud1.setRollNo(RollNo);
+    stud1.setMarks(NoOfSubj,subjmarks);
     
     cout<<"Roll No :"<< stud1.getRollNo() << endl;
     cout <<"Name :" << stud1.getName() << endl;
     
-    stud1.setSubject(subjcode);
-    stud1.setMarks(subjmarks);
-    
     string *sptr = stud1.getSubject();
     int *ptr = stud1.getMarks();
     
-    for (int i=0 ; i<=2 ;i++)
+    for (int i=0 ; i< NoOfSubj ;i++)
     {
         cout << *(sptr+i) ;
         cout <<":"<< *(ptr+i)<<endl;
     }
+    
+    cout << "Remarks:";
+   getline(cin,remarks,'.');  Remove the comment in the end 
+    
+    //cout << remarks<<".";
     return 0;
 }
 
 
-/*Stud1 Must have Subjects choosen from the given list and then associate the marks of that subject with it
-Name: Jay Parekh 
-Roll No.: 140763
-Subject_choosen are Hindi, English and Marathi 
-Marks obtained Hindi: 50, English: 80, Marathi: 90 */
-
-// Next update should be Drop Down menu for set Methods and get Methods by User Inputs
-// Seek and modify should also be there -> seek by name and seek by roll no.
-// Check if the inline functions would work here 
-// Add a class Date -> having child classes BirthDate, Joining Date 
-// Add Class standard and division 
-// How to make .header file and access the classes and methods
-// How to export the data in xml file or excel file 
+//Solve the problem. What if the student has more than one Subject
+//Stud1 Must have Subjects choosen from the given list and then associate the marks of that subject with it
+// Name: Jay Parekh 
+//Roll No.: 140763
+// Subject_choosen are Hindi, English and Marathi 
+// Marks obtained Hindi: 50, English: 80, Marathi: 90
